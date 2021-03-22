@@ -1,11 +1,10 @@
-package mpd
+package go_dash
 
 import (
+	"github.com/sjurtf/go-dash/helpers/ptrs"
+	"github.com/sjurtf/go-dash/helpers/require"
+	"github.com/sjurtf/go-dash/helpers/testfixtures"
 	"testing"
-
-	"github.com/zencoder/go-dash/helpers/ptrs"
-	"github.com/zencoder/go-dash/helpers/require"
-	"github.com/zencoder/go-dash/helpers/testfixtures"
 )
 
 func TestSegmentListSerialization(t *testing.T) {

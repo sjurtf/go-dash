@@ -1,4 +1,4 @@
-package mpd
+package go_dash
 
 type AttrMPD interface {
 	GetStrptr() *string

@@ -1,4 +1,4 @@
-package mpd
+package go_dash
 
 type SegmentBase struct {
 	Initialization           *URL     `xml:"Initialization,omitempty"`

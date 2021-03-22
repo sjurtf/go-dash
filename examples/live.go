@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/zencoder/go-dash/mpd"
+	mpd "github.com/sjurtf/go-dash"
 )
 
 func main() {

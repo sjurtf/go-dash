@@ -1,9 +1,10 @@
-package mpd
+package go_dash
 
 import (
 	"encoding/base64"
 	"encoding/hex"
-	"github.com/zencoder/go-dash/helpers/require"
+	"github.com/sjurtf/go-dash/helpers/require"
+
 	"testing"
 )
 

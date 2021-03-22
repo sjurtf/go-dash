@@ -1,14 +1,13 @@
-package mpd
+package go_dash
 
 import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/xml"
 	"errors"
+	"github.com/sjurtf/go-dash/helpers/ptrs"
 	"strings"
 	"time"
-
-	. "github.com/zencoder/go-dash/helpers/ptrs"
 )
 
 // Type definition for DASH profiles
@@ -398,11 +397,11 @@ type AudioChannelConfiguration struct {
 func NewMPD(profile DashProfile, mediaPresentationDuration, minBufferTime string, attributes ...AttrMPD) *MPD {
 	period := &Period{}
 	mpd := &MPD{
-		XMLNs:                     Strptr("urn:mpeg:dash:schema:mpd:2011"),
-		Profiles:                  Strptr((string)(profile)),
-		Type:                      Strptr("static"),
-		MediaPresentationDuration: Strptr(mediaPresentationDuration),
-		MinBufferTime:             Strptr(minBufferTime),
+		XMLNs:                     ptrs.Strptr("urn:mpeg:dash:schema:mpd:2011"),
+		Profiles:                  ptrs.Strptr((string)(profile)),
+		Type:                      ptrs.Strptr("static"),
+		MediaPresentationDuration: ptrs.Strptr(mediaPresentationDuration),
+		MinBufferTime:             ptrs.Strptr(minBufferTime),
 		period:                    period,
 		Periods:                   []*Period{period},
 	}
@@ -425,11 +424,11 @@ func NewMPD(profile DashProfile, mediaPresentationDuration, minBufferTime string
 func NewDynamicMPD(profile DashProfile, availabilityStartTime, minBufferTime string, attributes ...AttrMPD) *MPD {
 	period := &Period{}
 	mpd := &MPD{
-		XMLNs:                 Strptr("urn:mpeg:dash:schema:mpd:2011"),
-		Profiles:              Strptr((string)(profile)),
-		Type:                  Strptr("dynamic"),
-		AvailabilityStartTime: Strptr(availabilityStartTime),
-		MinBufferTime:         Strptr(minBufferTime),
+		XMLNs:                 ptrs.Strptr("urn:mpeg:dash:schema:mpd:2011"),
+		Profiles:              ptrs.Strptr((string)(profile)),
+		Type:                  ptrs.Strptr("dynamic"),
+		AvailabilityStartTime: ptrs.Strptr(availabilityStartTime),
+		MinBufferTime:         ptrs.Strptr(minBufferTime),
 		period:                period,
 		Periods:               []*Period{period},
 		UTCTiming:             &DescriptorType{},
@@ -475,9 +474,9 @@ func (m *MPD) AddNewAdaptationSetThumbnails(mimeType string) (*AdaptationSet, er
 
 func (period *Period) AddNewAdaptationSetThumbnails(mimeType string) (*AdaptationSet, error) {
 	as := &AdaptationSet{
-		ContentType: Strptr(DASH_CONTENT_TYPE_IMAGE),
+		ContentType: ptrs.Strptr(DASH_CONTENT_TYPE_IMAGE),
 		CommonAttributesAndElements: CommonAttributesAndElements{
-			MimeType: Strptr(mimeType),
+			MimeType: ptrs.Strptr(mimeType),
 		},
 	}
 	err := period.addAdaptationSet(as)
@@ -493,10 +492,10 @@ func (m *MPD) AddNewAdaptationSetThumbnailsWithID(id, mimeType string) (*Adaptat
 
 func (period *Period) AddNewAdaptationSetThumbnailsWithID(id, mimeType string) (*AdaptationSet, error) {
 	as := &AdaptationSet{
-		ID:          Strptr(id),
-		ContentType: Strptr(DASH_CONTENT_TYPE_IMAGE),
+		ID:          ptrs.Strptr(id),
+		ContentType: ptrs.Strptr(DASH_CONTENT_TYPE_IMAGE),
 		CommonAttributesAndElements: CommonAttributesAndElements{
-			MimeType: Strptr(mimeType),
+			MimeType: ptrs.Strptr(mimeType),
 		},
 	}
 	err := period.addAdaptationSet(as)
@@ -531,11 +530,11 @@ func (m *MPD) AddNewAdaptationSetAudioWithID(id string, mimeType string, segment
 // lang - Language (i.e. en).
 func (period *Period) AddNewAdaptationSetAudio(mimeType string, segmentAlignment bool, startWithSAP int64, lang string) (*AdaptationSet, error) {
 	as := &AdaptationSet{
-		SegmentAlignment: Boolptr(segmentAlignment),
-		Lang:             Strptr(lang),
+		SegmentAlignment: ptrs.Boolptr(segmentAlignment),
+		Lang:             ptrs.Strptr(lang),
 		CommonAttributesAndElements: CommonAttributesAndElements{
-			MimeType:     Strptr(mimeType),
-			StartWithSAP: Int64ptr(startWithSAP),
+			MimeType:     ptrs.Strptr(mimeType),
+			StartWithSAP: ptrs.Int64ptr(startWithSAP),
 		},
 	}
 	err := period.addAdaptationSet(as)
@@ -552,12 +551,12 @@ func (period *Period) AddNewAdaptationSetAudio(mimeType string, segmentAlignment
 // lang - Language (i.e. en).
 func (period *Period) AddNewAdaptationSetAudioWithID(id string, mimeType string, segmentAlignment bool, startWithSAP int64, lang string) (*AdaptationSet, error) {
 	as := &AdaptationSet{
-		ID:               Strptr(id),
-		SegmentAlignment: Boolptr(segmentAlignment),
-		Lang:             Strptr(lang),
+		ID:               ptrs.Strptr(id),
+		SegmentAlignment: ptrs.Boolptr(segmentAlignment),
+		Lang:             ptrs.Strptr(lang),
 		CommonAttributesAndElements: CommonAttributesAndElements{
-			MimeType:     Strptr(mimeType),
-			StartWithSAP: Int64ptr(startWithSAP),
+			MimeType:     ptrs.Strptr(mimeType),
+			StartWithSAP: ptrs.Int64ptr(startWithSAP),
 		},
 	}
 	err := period.addAdaptationSet(as)
@@ -592,11 +591,11 @@ func (m *MPD) AddNewAdaptationSetVideoWithID(id string, mimeType string, scanTyp
 // startWithSAP - Starts With SAP (i.e. 1).
 func (period *Period) AddNewAdaptationSetVideo(mimeType string, scanType string, segmentAlignment bool, startWithSAP int64) (*AdaptationSet, error) {
 	as := &AdaptationSet{
-		SegmentAlignment: Boolptr(segmentAlignment),
+		SegmentAlignment: ptrs.Boolptr(segmentAlignment),
 		CommonAttributesAndElements: CommonAttributesAndElements{
-			MimeType:     Strptr(mimeType),
-			StartWithSAP: Int64ptr(startWithSAP),
-			ScanType:     Strptr(scanType),
+			MimeType:     ptrs.Strptr(mimeType),
+			StartWithSAP: ptrs.Int64ptr(startWithSAP),
+			ScanType:     ptrs.Strptr(scanType),
 		},
 	}
 	err := period.addAdaptationSet(as)
@@ -613,12 +612,12 @@ func (period *Period) AddNewAdaptationSetVideo(mimeType string, scanType string,
 // startWithSAP - Starts With SAP (i.e. 1).
 func (period *Period) AddNewAdaptationSetVideoWithID(id string, mimeType string, scanType string, segmentAlignment bool, startWithSAP int64) (*AdaptationSet, error) {
 	as := &AdaptationSet{
-		SegmentAlignment: Boolptr(segmentAlignment),
-		ID:               Strptr(id),
+		SegmentAlignment: ptrs.Boolptr(segmentAlignment),
+		ID:               ptrs.Strptr(id),
 		CommonAttributesAndElements: CommonAttributesAndElements{
-			MimeType:     Strptr(mimeType),
-			StartWithSAP: Int64ptr(startWithSAP),
-			ScanType:     Strptr(scanType),
+			MimeType:     ptrs.Strptr(mimeType),
+			StartWithSAP: ptrs.Int64ptr(startWithSAP),
+			ScanType:     ptrs.Strptr(scanType),
 		},
 	}
 	err := period.addAdaptationSet(as)
@@ -647,9 +646,9 @@ func (m *MPD) AddNewAdaptationSetSubtitleWithID(id string, mimeType string, lang
 // lang - Language (i.e. en).
 func (period *Period) AddNewAdaptationSetSubtitle(mimeType string, lang string) (*AdaptationSet, error) {
 	as := &AdaptationSet{
-		Lang: Strptr(lang),
+		Lang: ptrs.Strptr(lang),
 		CommonAttributesAndElements: CommonAttributesAndElements{
-			MimeType: Strptr(mimeType),
+			MimeType: ptrs.Strptr(mimeType),
 		},
 	}
 	err := period.addAdaptationSet(as)
@@ -664,10 +663,10 @@ func (period *Period) AddNewAdaptationSetSubtitle(mimeType string, lang string) 
 // lang - Language (i.e. en).
 func (period *Period) AddNewAdaptationSetSubtitleWithID(id string, mimeType string, lang string) (*AdaptationSet, error) {
 	as := &AdaptationSet{
-		ID:   Strptr(id),
-		Lang: Strptr(lang),
+		ID:   ptrs.Strptr(id),
+		Lang: ptrs.Strptr(lang),
 		CommonAttributesAndElements: CommonAttributesAndElements{
-			MimeType: Strptr(mimeType),
+			MimeType: ptrs.Strptr(mimeType),
 		},
 	}
 	err := period.addAdaptationSet(as)
@@ -700,11 +699,11 @@ func (as *AdaptationSet) AddNewContentProtectionRootLegacyUUID(defaultKIDHex str
 	defaultKID := strings.ToLower(defaultKIDHex[0:8] + "-" + defaultKIDHex[8:12] + "-" + defaultKIDHex[12:16] + "-" + defaultKIDHex[16:32])
 
 	cp := &CENCContentProtection{
-		DefaultKID: Strptr(defaultKID),
-		Value:      Strptr(CONTENT_PROTECTION_ROOT_VALUE),
+		DefaultKID: ptrs.Strptr(defaultKID),
+		Value:      ptrs.Strptr(CONTENT_PROTECTION_ROOT_VALUE),
 	}
-	cp.SchemeIDURI = Strptr(CONTENT_PROTECTION_ROOT_SCHEME_ID_URI)
-	cp.XMLNS = Strptr(CENC_XMLNS)
+	cp.SchemeIDURI = ptrs.Strptr(CONTENT_PROTECTION_ROOT_SCHEME_ID_URI)
+	cp.XMLNS = ptrs.Strptr(CENC_XMLNS)
 
 	err := as.AddContentProtection(cp)
 	if err != nil {
@@ -725,11 +724,11 @@ func (as *AdaptationSet) AddNewContentProtectionRoot(defaultKIDHex string) (*CEN
 	defaultKID := strings.ToLower(defaultKIDHex[0:8] + "-" + defaultKIDHex[8:12] + "-" + defaultKIDHex[12:16] + "-" + defaultKIDHex[16:20] + "-" + defaultKIDHex[20:32])
 
 	cp := &CENCContentProtection{
-		DefaultKID: Strptr(defaultKID),
-		Value:      Strptr(CONTENT_PROTECTION_ROOT_VALUE),
+		DefaultKID: ptrs.Strptr(defaultKID),
+		Value:      ptrs.Strptr(CONTENT_PROTECTION_ROOT_VALUE),
 	}
-	cp.SchemeIDURI = Strptr(CONTENT_PROTECTION_ROOT_SCHEME_ID_URI)
-	cp.XMLNS = Strptr(CENC_XMLNS)
+	cp.SchemeIDURI = ptrs.Strptr(CONTENT_PROTECTION_ROOT_SCHEME_ID_URI)
+	cp.XMLNS = ptrs.Strptr(CENC_XMLNS)
 
 	err := as.AddContentProtection(cp)
 	if err != nil {
@@ -771,10 +770,10 @@ func (as *AdaptationSet) AddNewContentProtectionSchemeWidevine() (*WidevineConte
 
 func NewWidevineContentProtection(wvHeader []byte) (*WidevineContentProtection, error) {
 	cp := &WidevineContentProtection{}
-	cp.SchemeIDURI = Strptr(CONTENT_PROTECTION_WIDEVINE_SCHEME_ID)
+	cp.SchemeIDURI = ptrs.Strptr(CONTENT_PROTECTION_WIDEVINE_SCHEME_ID)
 
 	if len(wvHeader) > 0 {
-		cp.XMLNS = Strptr(CENC_XMLNS)
+		cp.XMLNS = ptrs.Strptr(CENC_XMLNS)
 		wvSystemID, err := hex.DecodeString(CONTENT_PROTECTION_WIDEVINE_SCHEME_HEX)
 		if err != nil {
 			panic(err.Error())
@@ -826,10 +825,10 @@ func newPlayreadyContentProtection(pro string, schemeIDURI string) (*PlayreadyCo
 	}
 
 	cp := &PlayreadyContentProtection{
-		PlayreadyXMLNS: Strptr(CONTENT_PROTECTION_PLAYREADY_XMLNS),
-		PRO:            Strptr(pro),
+		PlayreadyXMLNS: ptrs.Strptr(CONTENT_PROTECTION_PLAYREADY_XMLNS),
+		PRO:            ptrs.Strptr(pro),
 	}
-	cp.SchemeIDURI = Strptr(schemeIDURI)
+	cp.SchemeIDURI = ptrs.Strptr(schemeIDURI)
 
 	return cp, nil
 }
@@ -842,7 +841,7 @@ func (as *AdaptationSet) AddNewContentProtectionSchemePlayreadyWithPSSH(pro stri
 	if err != nil {
 		return nil, err
 	}
-	cp.XMLNS = Strptr(CENC_XMLNS)
+	cp.XMLNS = ptrs.Strptr(CENC_XMLNS)
 	prSystemID, err := hex.DecodeString(CONTENT_PROTECTION_PLAYREADY_SCHEME_HEX)
 	if err != nil {
 		panic(err.Error())
@@ -857,7 +856,7 @@ func (as *AdaptationSet) AddNewContentProtectionSchemePlayreadyWithPSSH(pro stri
 	if err != nil {
 		return nil, err
 	}
-	cp.PSSH = Strptr(base64.StdEncoding.EncodeToString(psshBox))
+	cp.PSSH = ptrs.Strptr(base64.StdEncoding.EncodeToString(psshBox))
 
 	err = as.AddContentProtection(cp)
 	if err != nil {
@@ -874,7 +873,7 @@ func (as *AdaptationSet) AddNewContentProtectionSchemePlayreadyV10WithPSSH(pro s
 	if err != nil {
 		return nil, err
 	}
-	cp.XMLNS = Strptr(CENC_XMLNS)
+	cp.XMLNS = ptrs.Strptr(CENC_XMLNS)
 	prSystemID, err := hex.DecodeString(CONTENT_PROTECTION_PLAYREADY_SCHEME_V10_HEX)
 	if err != nil {
 		panic(err.Error())
@@ -889,7 +888,7 @@ func (as *AdaptationSet) AddNewContentProtectionSchemePlayreadyV10WithPSSH(pro s
 	if err != nil {
 		return nil, err
 	}
-	cp.PSSH = Strptr(base64.StdEncoding.EncodeToString(psshBox))
+	cp.PSSH = ptrs.Strptr(base64.StdEncoding.EncodeToString(psshBox))
 
 	err = as.AddContentProtection(cp)
 	if err != nil {
@@ -916,11 +915,11 @@ func (as *AdaptationSet) AddContentProtection(cp ContentProtectioner) error {
 // timescale - sets the timescale for duration (i.e. 1000, represents milliseconds).
 func (as *AdaptationSet) SetNewSegmentTemplate(duration int64, init string, media string, startNumber int64, timescale int64) (*SegmentTemplate, error) {
 	st := &SegmentTemplate{
-		Duration:       Int64ptr(duration),
-		Initialization: Strptr(init),
-		Media:          Strptr(media),
-		StartNumber:    Int64ptr(startNumber),
-		Timescale:      Int64ptr(timescale),
+		Duration:       ptrs.Int64ptr(duration),
+		Initialization: ptrs.Strptr(init),
+		Media:          ptrs.Strptr(media),
+		StartNumber:    ptrs.Int64ptr(startNumber),
+		Timescale:      ptrs.Int64ptr(timescale),
 	}
 
 	err := as.setSegmentTemplate(st)
@@ -947,10 +946,10 @@ func (as *AdaptationSet) setSegmentTemplate(st *SegmentTemplate) error {
 // timescale - sets the timescale for duration (i.e. 1000, represents milliseconds).
 func (as *AdaptationSet) SetNewSegmentTemplateThumbnails(duration int64, media string, startNumber int64, timescale int64) (*SegmentTemplate, error) {
 	st := &SegmentTemplate{
-		Duration:    Int64ptr(duration),
-		Media:       Strptr(media),
-		StartNumber: Int64ptr(startNumber),
-		Timescale:   Int64ptr(timescale),
+		Duration:    ptrs.Int64ptr(duration),
+		Media:       ptrs.Strptr(media),
+		StartNumber: ptrs.Int64ptr(startNumber),
+		Timescale:   ptrs.Int64ptr(timescale),
 	}
 
 	err := as.setSegmentTemplate(st)
@@ -968,15 +967,15 @@ func (as *AdaptationSet) SetNewSegmentTemplateThumbnails(duration int64, media s
 // uri -
 func (as *AdaptationSet) AddNewRepresentationThumbnails(id, val, uri string, bandwidth, width, height int64) (*Representation, error) {
 	r := &Representation{
-		Bandwidth: Int64ptr(bandwidth),
-		ID:        Strptr(id),
-		Width:     Int64ptr(width),
-		Height:    Int64ptr(height),
+		Bandwidth: ptrs.Int64ptr(bandwidth),
+		ID:        ptrs.Strptr(id),
+		Width:     ptrs.Int64ptr(width),
+		Height:    ptrs.Int64ptr(height),
 		CommonAttributesAndElements: CommonAttributesAndElements{
 			EssentialProperty: []DescriptorType{
 				{
-					SchemeIDURI: Strptr(uri),
-					Value:       Strptr(val),
+					SchemeIDURI: ptrs.Strptr(uri),
+					Value:       ptrs.Strptr(val),
 				},
 			},
 		},
@@ -996,10 +995,10 @@ func (as *AdaptationSet) AddNewRepresentationThumbnails(id, val, uri string, ban
 // id - ID for this representation, will get used as $RepresentationID$ in template strings.
 func (as *AdaptationSet) AddNewRepresentationAudio(samplingRate int64, bandwidth int64, codecs string, id string) (*Representation, error) {
 	r := &Representation{
-		AudioSamplingRate: Int64ptr(samplingRate),
-		Bandwidth:         Int64ptr(bandwidth),
-		Codecs:            Strptr(codecs),
-		ID:                Strptr(id),
+		AudioSamplingRate: ptrs.Int64ptr(samplingRate),
+		Bandwidth:         ptrs.Int64ptr(bandwidth),
+		Codecs:            ptrs.Strptr(codecs),
+		ID:                ptrs.Strptr(id),
 	}
 
 	err := as.addRepresentation(r)
@@ -1018,12 +1017,12 @@ func (as *AdaptationSet) AddNewRepresentationAudio(samplingRate int64, bandwidth
 // height - height of the video (i.e 720).
 func (as *AdaptationSet) AddNewRepresentationVideo(bandwidth int64, codecs string, id string, frameRate string, width int64, height int64) (*Representation, error) {
 	r := &Representation{
-		Bandwidth: Int64ptr(bandwidth),
-		Codecs:    Strptr(codecs),
-		ID:        Strptr(id),
-		FrameRate: Strptr(frameRate),
-		Width:     Int64ptr(width),
-		Height:    Int64ptr(height),
+		Bandwidth: ptrs.Int64ptr(bandwidth),
+		Codecs:    ptrs.Strptr(codecs),
+		ID:        ptrs.Strptr(id),
+		FrameRate: ptrs.Strptr(frameRate),
+		Width:     ptrs.Int64ptr(width),
+		Height:    ptrs.Int64ptr(height),
 	}
 
 	err := as.addRepresentation(r)
@@ -1038,8 +1037,8 @@ func (as *AdaptationSet) AddNewRepresentationVideo(bandwidth int64, codecs strin
 // id - ID for this representation, will get used as $RepresentationID$ in template strings.
 func (as *AdaptationSet) AddNewRepresentationSubtitle(bandwidth int64, id string) (*Representation, error) {
 	r := &Representation{
-		Bandwidth: Int64ptr(bandwidth),
-		ID:        Strptr(id),
+		Bandwidth: ptrs.Int64ptr(bandwidth),
+		ID:        ptrs.Strptr(id),
 	}
 
 	err := as.addRepresentation(r)
@@ -1074,8 +1073,8 @@ func (as *AdaptationSet) addAccessibility(a *Accessibility) error {
 // value - Value for this role, (i.e. caption, subtitle, main, alternate, supplementary, commentary, dub)
 func (as *AdaptationSet) AddNewRole(schemeIDURI string, value string) (*Role, error) {
 	r := &Role{
-		SchemeIDURI: Strptr(schemeIDURI),
-		Value:       Strptr(value),
+		SchemeIDURI: ptrs.Strptr(schemeIDURI),
+		Value:       ptrs.Strptr(value),
 	}
 	r.AdaptationSet = as
 	as.Roles = append(as.Roles, r)
@@ -1087,8 +1086,8 @@ func (as *AdaptationSet) AddNewRole(schemeIDURI string, value string) (*Role, er
 // value - specified value based on scheme
 func (as *AdaptationSet) AddNewAccessibilityElement(scheme AccessibilityElementScheme, val string) (*Accessibility, error) {
 	accessibility := &Accessibility{
-		SchemeIdUri: Strptr((string)(scheme)),
-		Value:       Strptr(val),
+		SchemeIdUri: ptrs.Strptr((string)(scheme)),
+		Value:       ptrs.Strptr(val),
 	}
 
 	err := as.addAccessibility(accessibility)
@@ -1105,7 +1104,7 @@ func (r *Representation) SetNewBaseURL(baseURL string) error {
 	if baseURL == "" {
 		return ErrBaseURLEmpty
 	}
-	r.BaseURL = Strptr(baseURL)
+	r.BaseURL = ptrs.Strptr(baseURL)
 	return nil
 }
 
@@ -1115,8 +1114,8 @@ func (r *Representation) SetNewBaseURL(baseURL string) error {
 // init - Byte range to the init atoms (ftyp+moov).
 func (r *Representation) AddNewSegmentBase(indexRange string, initRange string) (*SegmentBase, error) {
 	sb := &SegmentBase{
-		IndexRange:     Strptr(indexRange),
-		Initialization: &URL{Range: Strptr(initRange)},
+		IndexRange:     ptrs.Strptr(indexRange),
+		Initialization: &URL{Range: ptrs.Strptr(initRange)},
 	}
 
 	err := r.setSegmentBase(sb)
@@ -1144,8 +1143,8 @@ func (r *Representation) setSegmentBase(sb *SegmentBase) error {
 // channelConfiguration - string that represents the channel configuration.
 func (r *Representation) AddNewAudioChannelConfiguration(scheme AudioChannelConfigurationScheme, channelConfiguration string) (*AudioChannelConfiguration, error) {
 	acc := &AudioChannelConfiguration{
-		SchemeIDURI: Strptr((string)(scheme)),
-		Value:       Strptr(channelConfiguration),
+		SchemeIDURI: ptrs.Strptr((string)(scheme)),
+		Value:       ptrs.Strptr(channelConfiguration),
 	}
 
 	err := r.setAudioChannelConfiguration(acc)

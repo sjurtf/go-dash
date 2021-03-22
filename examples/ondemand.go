@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/zencoder/go-dash/mpd"
+	mpd "github.com/sjurtf/go-dash"
 )
 
 func exampleOndemand() {
+
 	m := mpd.NewMPD(mpd.DASH_PROFILE_ONDEMAND, "PT30S", "PT1.97S")
 
 	audioAS, _ := m.AddNewAdaptationSetAudio(mpd.DASH_MIME_TYPE_AUDIO_MP4, true, 1, "und")

@@ -1,4 +1,4 @@
-package mpd
+package go_dash
 
 // Validate checks for incomplete MPD object
 func (m *MPD) Validate() error {

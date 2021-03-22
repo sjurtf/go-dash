@@ -1,11 +1,10 @@
-package mpd
+package go_dash
 
 import (
 	"fmt"
+	"github.com/sjurtf/go-dash/helpers/require"
 	"testing"
 	"time"
-
-	"github.com/zencoder/go-dash/helpers/require"
 )
 
 func TestDuration(t *testing.T) {

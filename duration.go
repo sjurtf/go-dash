@@ -1,6 +1,6 @@
 // based on code from golang src/time/time.go
 
-package mpd
+package go_dash
 
 import (
 	"encoding/xml"

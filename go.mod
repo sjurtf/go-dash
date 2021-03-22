@@ -1,3 +1,3 @@
-module github.com/zencoder/go-dash
+module github.com/sjurtf/go-dash
 
-go 1.13
+go 1.16
